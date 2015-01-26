@@ -52,19 +52,19 @@
 (require 'color-theme)
 
 (condition-case nil
-    (load  "~/.xemacs/nxml/rng-auto.elc")
+    (load  "~/.xemacs/nxml/rng-auto.el")
   (error nil))
 (condition-case nil
-    (load "~/.xemacs/nxhtml/autostart.elc")
+    (load "~/.xemacs/nxhtml/autostart.el")
   (error nil))
 (condition-case nil
     (load-library "autostart")
   (error nil))
 (condition-case nil
-    (load "~/.xemacs/color-theme-almost-monokai.elc")
+    (load "~/.xemacs/color-theme-almost-monokai.el")
   (error nil))
 (condition-case nil
-    (load "~/.xemacs/ssh.elc")
+    (load "~/.xemacs/ssh.el")
   (error nil))
 (condition-case nil
     (load "~/.xemacs/cmake-mode.el")
