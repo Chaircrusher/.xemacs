@@ -3,6 +3,7 @@
 
 ;; enable visual feedback on selections
 ;(setq transient-mark-mode t)
+(tooltip-mode nil)
 
 ;; default to better frame titles
 (setq frame-title-format
@@ -14,14 +15,15 @@
 ;; always end a file with a newline
 (setq require-final-newline 'query)
 
-(server-start)
-(setenv "EDITOR" "emacsclient")
+;;(server-start)
+;;(setenv "EDITOR" "emacsclient")
 
 
-(setq-default indent-tabs-mode t)
+(setq-default indent-tabs-mode nil)
 (setq-default tab-width 3)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
+(setq-default c-basic-offset 3 tab-width 3 indent-tabs-mode t)
 (setq-default c++-tab-always-indent t)
 
 ;;;;;;;;;;;;;;
@@ -44,8 +46,11 @@
 
 (global-set-key "\C-h" 'backward-delete-char-untabify)
 (global-set-key "\C-cb" 'browse-url)
+(global-unset-key (kbd "C-x SPC"))
+(global-set-key (kbd "C-x SPC") 'gud-break)
 
 (put 'erase-buffer 'disabled nil)
+(setq load-path (cons "~/.xemacs" load-path))
 (setq load-path (cons "~/.xemacs/color-theme-6.6.0" load-path))
 
 
@@ -128,3 +133,25 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
+
+(defun tabify-leading (start end)
+  "Call `tabify' with `tabify-regexp' set so that only leading
+spaces are treated."
+  (interactive "r")
+  (when (boundp 'tabify-regexp)
+    (setq tabify-regexp-old tabify-regexp))
+  (unwind-protect
+      (progn
+        (setq tabify-regexp "^\t* [ \t]+")
+        (tabify start end))
+    (when (boundp 'tabify-regexp-old)
+      (setq tabify-regexp tabify-regexp-old))
+    )
+  )
+(defun dos2unix ()
+      "Not exactly but it's easier to remember"
+      (interactive)
+      (set-buffer-file-coding-system 'unix 't) )
+
+(eval-after-load "sql"
+  '(load-library "sql-indent"))
