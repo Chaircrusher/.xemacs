@@ -1,9 +1,29 @@
 ;;; uncomment this line to disable loading of "default.el" at startup
+
+;; add melp repo
+(require 'package)
+(add-to-list 'package-archives
+				 '("melpa" . "http://melpa.org/packages/") t)
+
 ;; (setq inhibit-default-init t)
+(if (version< emacs-version "25.1")
+	 (progn
+		(require 'saveplace)
+		(setq-default save-place t)
+		)
+  (save-place-mode 1))
+(setq save-place-forget-unreadable-files nil)
+
+;; don't do that annoying 'go to debug on error thing'
+(setq debug-on-error nil)
 
 ;; enable visual feedback on selections
 ;(setq transient-mark-mode t)
 (tooltip-mode nil)
+(setq tooltip-use-echo-area t)
+
+;; turn off throw to debugger
+(setq debug-on-error nil)
 
 ;; default to better frame titles
 (setq frame-title-format
@@ -148,10 +168,16 @@ spaces are treated."
       (setq tabify-regexp tabify-regexp-old))
     )
   )
-(defun dos2unix ()
-      "Not exactly but it's easier to remember"
-      (interactive)
-      (set-buffer-file-coding-system 'unix 't) )
-
 (eval-after-load "sql"
   '(load-library "sql-indent"))
+
+(defun unix-file ()
+  "Change the current buffer to Latin 1 with Unix line-ends."
+  (interactive)
+  (set-buffer-file-coding-system 'iso-latin-1-unix t))
+(defun dos-file ()
+  "Change the current buffer to Latin 1 with DOS line-ends."
+  (interactive)
+  (set-buffer-file-coding-system 'iso-latin-1-dos t))
+(add-to-list 'default-frame-alist
+				 '(vertical-scroll-bars . nil))
