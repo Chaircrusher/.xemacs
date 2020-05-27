@@ -1,26 +1,63 @@
-;;; uncomment this line to disable loading of "default.el" at startup
+(when (not (display-graphic-p))
+  (custom-set-faces
 
-;; add melp repo
-(require 'package)
-(add-to-list 'package-archives
-				 '("melpa" . "http://melpa.org/packages/") t)
+	'(term-color-black ((t (:foreground "#3F3F3F" :background "#2B2B2B"))))
+	'(term-color-red ((t (:foreground "#AC7373" :background "#8C5353"))))
+	'(term-color-green ((t (:foreground "#7F9F7F" :background "#9FC59F"))))
+	'(term-color-yellow ((t (:foreground "#DFAF8F" :background "#9FC59F"))))
+	'(term-color-blue ((t (:foreground "#7CB8BB" :background "#4C7073"))))
+	'(term-color-magenta ((t (:foreground "#DC8CC3" :background "#CC9393"))))
+	'(term-color-cyan ((t (:foreground "#93E0E3" :background "#8CD0D3"))))
+	'(term-color-white ((t (:foreground "#DCDCCC" :background "#656555"))))
+
+	'(term-default-fg-color ((t (:inherit term-color-white))))
+	'(term-default-bg-color ((t (:inherit term-color-black))))
+
+	)
+  )
+;;; uncomment this line to disable loading of "default.el" at startup
+(setq inhibit-startup-screen t)
 
 ;; (setq inhibit-default-init t)
-(if (version< emacs-version "25.1")
+;; add melp repo
+(if (not (version< emacs-version "24.4"))
 	 (progn
-		(require 'saveplace)
-		(setq-default save-place t)
+	   (require 'package)
+	   (add-to-list 'package-archives
+			'("melpa" . "http://melpa.org/packages/") t)
+	   )
+  (defun toggle-fullscreen ()
+	 "Toggle full screen on X11"
+	 (interactive)
+	 (when (eq window-system 'x)
+		(set-frame-parameter
+		 nil 'fullscreen
+		 (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+
+  (global-set-key [f11] 'toggle-fullscreen)
+  )
+(if (not (version< emacs-version "25.1"))
+    (progn
+      (require 'saveplace)
+      (save-place-mode 1)
+      )
+      (progn
+		  (require 'saveplace)
+		  (setq-default save-place t)
+		  )
 		)
-  (save-place-mode 1))
 (setq save-place-forget-unreadable-files nil)
 
 ;; don't do that annoying 'go to debug on error thing'
 (setq debug-on-error nil)
 
 ;; enable visual feedback on selections
-;(setq transient-mark-mode t)
+;;(setq transient-mark-mode t)
 (tooltip-mode nil)
 (setq tooltip-use-echo-area t)
+
+;; don't use dialogs
+(setq use-dialog-box nil)
 
 ;; turn off throw to debugger
 (setq debug-on-error nil)
@@ -74,34 +111,37 @@
 (setq load-path (cons "~/.xemacs/color-theme-6.6.0" load-path))
 
 
-(require 'color-theme)
+(if (display-graphic-p)
+	 (progn
+		(require 'color-theme)
 
-(condition-case nil
-    (load  "~/.xemacs/nxml/rng-auto.el")
-  (error nil))
-(condition-case nil
-    (load "~/.xemacs/nxhtml/autostart.el")
-  (error nil))
-(condition-case nil
-    (load-library "autostart")
-  (error nil))
-(condition-case nil
-    (load "~/.xemacs/color-theme-almost-monokai.el")
-  (error nil))
-(condition-case nil
-    (load "~/.xemacs/ssh.el")
-  (error nil))
-(condition-case nil
-    (load "~/.xemacs/cmake-mode.el")
-  (error nil))
-(condition-case nil
-    (color-theme-almost-monokai)
-  (error nil))
+		(condition-case nil
+			 (load  "~/.xemacs/nxml/rng-auto.el")
+		  (error nil))
+		(condition-case nil
+			 (load "~/.xemacs/nxhtml/autostart.el")
+		  (error nil))
+		(condition-case nil
+			 (load-library "autostart")
+		  (error nil))
+		(condition-case nil
+			 (load "~/.xemacs/color-theme-almost-monokai.el")
+		  (error nil))
+		(condition-case nil
+			 (load "~/.xemacs/ssh.el")
+		  (error nil))
+		(condition-case nil
+			 (load "~/.xemacs/cmake-mode.el")
+		  (error nil))
+		(condition-case nil
+			 (color-theme-almost-monokai)
+		  (error nil))))
 
 (if (string= (substring (shell-command-to-string "uname") 0 -1) "Darwin")
     (progn (setenv "DISPLAY" ":0.0"))
 )
 
+;;(add-to-list 'default-frame-alist '(tty-color-mode . -1))
 (setq default-truncate-lines nil)
 (setq indent-tab-mode nil)
 (if (string= system-type "darwin")
@@ -181,3 +221,6 @@ spaces are treated."
   (set-buffer-file-coding-system 'iso-latin-1-dos t))
 (add-to-list 'default-frame-alist
 				 '(vertical-scroll-bars . nil))
+;;(eval-after-load 'compile
+;;  (add-to-list 'compilation-error-regexp-alist
+;;               '("^\\([^(\n]+\\)(\\([0-9]+\\),\\([0-9]+\\)):" 1 2 3)))
